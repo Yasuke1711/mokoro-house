@@ -16,23 +16,17 @@ python -m http.server 8000
 
 Then visit http://localhost:8000.
 
-## Deploy
+## Deploy with Vercel
 
-### GitHub Pages (recommended)
-1. Open the repository's **Settings → Pages**.
-2. Under **Build and deployment**, select **GitHub Actions** as the source.
-3. The included workflow deploys the site on pushes to `main`.
-4. The site will be available at https://yasuke1711.github.io/mokoro-house/.
+1. Open [Vercel](https://vercel.com/) and choose **Add New → Project**.
+2. Import the `Yasuke1711/mokoro-house` GitHub repository.
+3. Set **Framework Preset** to **Other**.
+4. Keep **Root Directory** as `./`.
+5. Leave the **Build Command** empty. If Vercel asks, enable its override and leave the field blank.
+6. Leave **Output Directory** at the default. This repository has its `index.html` at the root, so Vercel serves the site directly.
+7. Click **Deploy**.
 
-### Vercel
-1. Import `Yasuke1711/mokoro-house` as a new Vercel project.
-2. Select **Other** as the framework preset.
-3. Leave the build command empty.
-4. Set the output directory to `.`.
-5. Deploy.
-
-### Netlify
-Connect the repository as a new Netlify site. The included `netlify.toml` publishes the repository root without a build step.
+Once connected, commits pushed to `main` automatically create new deployments.
 
 ## Features
 
