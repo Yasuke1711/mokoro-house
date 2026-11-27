@@ -11,19 +11,40 @@ mainNav.querySelectorAll('a').forEach(link => link.addEventListener('click', () 
   menuToggle.setAttribute('aria-expanded', 'false');
   menuToggle.setAttribute('aria-label', 'Open navigation');
 }));
+
 const quickArrival = document.querySelector('#quick-arrival');
 const quickDeparture = document.querySelector('#quick-departure');
 const arrival = document.querySelector('#arrival');
 const departure = document.querySelector('#departure');
+const dateInputs = [quickArrival, quickDeparture, arrival, departure];
 const today = new Date();
 const localToday = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
-[quickArrival, quickDeparture, arrival, departure].forEach(input => input.min = localToday);
+
+function updateDateDisplay(input) {
+  const display = input.parentElement.querySelector('.date-display');
+  if (!display) return;
+  if (!input.value) {
+    display.textContent = 'DD/MM/YYYY';
+    return;
+  }
+  const [year, month, day] = input.value.split('-');
+  display.textContent = day + '/' + month + '/' + year;
+}
+dateInputs.forEach(input => {
+  input.min = localToday;
+  updateDateDisplay(input);
+  input.addEventListener('change', () => updateDateDisplay(input));
+});
 function updateDepartureMin(arrive, leave) {
   leave.min = arrive.value || localToday;
-  if (leave.value && arrive.value && leave.value <= arrive.value) leave.value = '';
+  if (leave.value && arrive.value && leave.value <= arrive.value) {
+    leave.value = '';
+    updateDateDisplay(leave);
+  }
 }
 quickArrival.addEventListener('change', () => updateDepartureMin(quickArrival, quickDeparture));
 arrival.addEventListener('change', () => updateDepartureMin(arrival, departure));
+
 document.querySelector('#quick-form').addEventListener('submit', event => {
   event.preventDefault();
   if (!event.currentTarget.reportValidity()) return;
@@ -35,6 +56,8 @@ document.querySelector('#quick-form').addEventListener('submit', event => {
   }
   arrival.value = quickArrival.value;
   departure.value = quickDeparture.value;
+  updateDateDisplay(arrival);
+  updateDateDisplay(departure);
   document.querySelector('#guests').value = quickGuestsValue();
   document.querySelector('#enquire').scrollIntoView({behavior:'smooth',block:'start'});
 });
@@ -42,18 +65,20 @@ function quickGuestsValue() {
   const value = document.querySelector('#quick-guests').value;
   return value === '1' ? '1 guest' : value + ' guests';
 }
+
 document.querySelectorAll('.choose-stay').forEach(button => {
   button.addEventListener('click', () => {
     document.querySelector('#room').value = button.dataset.room;
     document.querySelector('#enquire').scrollIntoView({behavior:'smooth',block:'start'});
   });
 });
+
 const enquiryForm = document.querySelector('#enquiry-form');
 const enquiryResult = document.querySelector('#enquiry-result');
 const summary = document.querySelector('#enquiry-summary');
 const copyStatus = document.querySelector('#copy-status');
 function readableDate(value) {
-  return new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'long',year:'numeric'}).format(new Date(value + 'T12:00:00'));
+  return new Intl.DateTimeFormat('en-GB',{day:'2-digit',month:'2-digit',year:'numeric'}).format(new Date(value + 'T12:00:00'));
 }
 enquiryForm.addEventListener('submit', event => {
   event.preventDefault();
@@ -79,6 +104,7 @@ enquiryForm.addEventListener('submit', event => {
   enquiryResult.hidden = false;
   enquiryResult.scrollIntoView({behavior:'smooth',block:'center'});
 });
+
 document.querySelector('#copy-enquiry').addEventListener('click', async () => {
   try {
     await navigator.clipboard.writeText(summary.textContent);
@@ -101,6 +127,7 @@ document.querySelector('#edit-enquiry').addEventListener('click', () => {
   copyStatus.textContent = '';
   enquiryForm.scrollIntoView({behavior:'smooth',block:'center'});
 });
+
 const lightbox = document.querySelector('#lightbox');
 const lightboxImage = document.querySelector('#lightbox-image');
 document.querySelectorAll('[data-lightbox]').forEach(button => {
