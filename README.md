@@ -18,6 +18,12 @@ Then visit http://localhost:8000.
 
 ## Deploy
 
+### GitHub Pages (recommended)
+1. Open the repository's **Settings → Pages**.
+2. Under **Build and deployment**, select **GitHub Actions** as the source.
+3. The included workflow deploys the site on pushes to `main`.
+4. The site will be available at https://yasuke1711.github.io/mokoro-house/.
+
 ### Vercel
 1. Import `Yasuke1711/mokoro-house` as a new Vercel project.
 2. Select **Other** as the framework preset.
